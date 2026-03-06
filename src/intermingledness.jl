@@ -81,7 +81,7 @@ function plot_intermingledness!(fig, intermingledness;
         cmap = to_color.([:white, :black]), ilims = (0, 1),
         names = string.(axes(intermingledness, 2)),
         unitlen = 40, hidexlabels = false, fixed_size = true,
-        add_colorbar = true,
+        add_colorbar = true, xlabel = "diagnostic (state space dimension)",
     )
 
     N = size(intermingledness, 1) # number of basins
@@ -98,7 +98,7 @@ function plot_intermingledness!(fig, intermingledness;
     axhm = Axis(fig[2,1];
         width = fixed_size ? unitlen*D : Auto(),
         height = fixed_size ? unitlen * N : Auto(), axbgkw...,
-        ylabel = "group ID", xlabel = "diagnostic (state space dimension)",
+        ylabel = "group ID", xlabel,
     )
     hm = heatmap!(axhm, intermingledness'; hmapkw...)
     translate!(hm, 0, 0, -100)
@@ -147,18 +147,21 @@ function plot_intermingledness!(fig, intermingledness;
 end
 
 function plot_twice_intermingledness!(fig, imatrix1, imatrix2;
-    title1 = "", title2 = "", cmap = to_color.([:white, :black]), ilims = (0, 1), kw...)
+        title1 = "", title2 = "", cmap = to_color.([:white, :black]), ilims = (0, 1),
+        names = string.(axes(intermingledness, 2)), names2 = names, kw...
+    )
 
     fig1 = plot_intermingledness!(GridLayout(fig[1,1]), imatrix_features;
-        kw..., cmap, ilims, hidexlabels = true, add_colorbar = false,
+        names, kw..., cmap, ilims, hidexlabels = names2 == names,
+        xlabel = "feature (extracted from diagnostics)", add_colorbar = false,
     )
     content(fig1[1,1]).title = title1
     fig2 = plot_intermingledness!(GridLayout(fig[2,1]), imatrix_basins;
-        kw..., cmap, ilims, add_colorbar = false,
+        kw..., names = names2, cmap, ilims, add_colorbar = false,
     )
     content(fig2[1,1]).title = title2
     hmapkw = (colorrange = ilims, colormap = cgrad(cmap, 9, categorical = true), highclip = cmap[end])
     Colorbar(fig[:,2]; label = "intermingledness", width = 20, ticks = [0,1], labelpadding = -20, hmapkw...)
-    rowgap!(fig, 2, 5)
+    rowgap!(fig, 1, 5)
     return
 end

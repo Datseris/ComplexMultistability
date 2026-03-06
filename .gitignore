@@ -1,9 +1,9 @@
 # Ignore manifest and stuff for now
 *.toml
 *.pptx
-*.ipynb
 *.png
-
+*.ipynb
+!notebooks/workflow.ipynb
 ################################################################################
 #                          DrWatson Project Structure                          #
 ################################################################################
@@ -12,7 +12,6 @@
 data
 videos
 plots
-notebooks
 _research
 documents
 

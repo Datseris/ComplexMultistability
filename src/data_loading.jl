@@ -1,4 +1,5 @@
 using StateSpaceSets
+using ClimateBase
 
 const Diagnostic = Dim{:diagnostic}
 const InitCond = Dim{:ic}
@@ -32,18 +33,28 @@ function cast_to_features(X::ClimArray, featurizer)
     return StateSpaceSet(allfeatures)
 end
 
-function initial_conditions(X::ClimArray)
+using Statistics: mean
+"""
+    initial_conditions(X::ClimArray, len = Inf)
+
+Create initial conditions by averaging the time dimension
+from index 1 to index `length(dims(X, Tim)) ÷ len`.
+Let `len = Inf` to use only the first time slice.
+"""
+function initial_conditions(X::ClimArray, len = Inf)
     ics = gnv(dims(X, InitCond))
     XIC = ClimArray(zeros(length.((ics, diagnostics))), dims(X, InitCond, Diagnostic))
+    L = Int(length(dims(X, Tim)) ÷ len)
     for i in eachindex(ics)
         slice = X[InitCond(i)]
         # To get actual initial condition is not trivial due to different evolution time
         # so we find the first non-missing entry
         x = gnv(slice[Diagnostic(1)]) # the diagnostic doesn't matter here
         j = findfirst(!ismissing, x)
-        XIC[InitCond(i)] .= gnv(slice[Time(j)])
+        array = dropdims(mean(slice[Tim(j:(L+j))]; dims = Tim); dims = Tim)
+        XIC[InitCond(i)] .= array
     end
-    return XIC
+    return StateSpaceSet(gnv(XIC))
 end
 
 

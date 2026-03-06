@@ -1,14 +1,26 @@
 # ComplexMultistability
 
-This code base is using the [Julia Language](https://julialang.org/) and
+This reproducible code base accompanies the research article:
+> Multistability and intermingledness in complex high-dimensional data
+by Datseris et al., 2026.
+The code base is using the [Julia Language](https://julialang.org/) and
 [DrWatson](https://juliadynamics.github.io/DrWatson.jl/stable/)
 to make a reproducible scientific project named
 > ComplexMultistability
 
-To (locally) reproduce this project, do the following:
+# Applying this to your own data
 
-0. Download this code base. Notice that raw data are typically not included in the
-   git-history and may need to be downloaded independently.
+To apply the same analysis of multistability to intermingledness as in the paper, you need to cast your data into diagnostic variables (Step 2. of the main figure of the paper).
+The format must be a NetCDF file, with three dimensions (named exactly like this): `time`, `diagnostic`, `ic`. The data themselves should be a single field that covers all three aforementioned dimensions. Typical name is `values`, although you can easily alter this in the scripts. Once you have the NetCDF file, follow the instructions in the `notebooks/workflow.ipynb` file, which is a Jupyter notebook providing an exemplary application of the workflow.
+
+# Paper reproducibility
+
+The remainder of the files in the `scripts` folder reproduce the figures of the paper.
+To achieve this you need to first download the model data used (available on request!).
+
+Then, to reproduce the project, do the following:
+
+0. Download this code base.
 1. Open a Julia console and do:
    ```
    julia> using Pkg

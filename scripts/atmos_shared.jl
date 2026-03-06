@@ -53,20 +53,10 @@ function featurizer(A::StateSpaceSet, t)
     return SVector(stds)
 end
 
-function extract_features(X)
-    ics = gnv(dims(X, InitCond)) .+ 1
-    allfeatures = map(ics) do ic
-        A = gnv(X[InitCond(ic)]) # careful: assumes time axis is first axis!
-        A = StateSpaceSet(A)
-        f = featurizer(A, nothing)
-    end
-    allfeatures = rescale_to_01(allfeatures) # this makes it an SSSet as well
-    return allfeatures
-end
+allfeatures = cast_to_features(X, featurizer)
+allfeatures = rescale_to_01(allfeatures)
 
-allfeatures = extract_features(X)
-
-ca = ADBSCAN(; min_neighbors = 10)
+ca = ADBSCAN(; rescale_features = false, min_neighbors = 10)
 fcq = FeaturesClusteringQuality(; attractor_weight = 1.0, feature_weight = 0.5, ca)
 
 best_choice, best_labels = optimize_feature_selection(fcq, allfeatures;
