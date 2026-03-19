@@ -26,8 +26,7 @@ parameters = StateSpaceSet(hcat(vec(log.(pressure)), vec(instellation)))
 
 # create "basins of attraction" (habitability composite)
 attractor_id(habit1, habit2) = (Bool(habit1) << 1) + Bool(habit2) + 1
-best_labels = @. attractor_id(habit_features[:, 1], habit_features[:, 4])
-
+best_labels = @. attractor_id(habit_features[:, 1], habit_features[:, 4]) .- 1
 
 # %%
 # Make overarching figure now
@@ -39,10 +38,11 @@ figbasins = GridLayout(fig[1,1])
 figdiagnostics = GridLayout(fig[2, :])
 
 # plot basins of parameters
-ids = unique(best_labels)
+ids = sort!(unique(best_labels))
 axbasins = Axis(figbasins[1, 1], title = "a: habitability versus parameters", xlabel =  "log(pressure)", ylabel = "instellation")
-colormap = Makie.Categorical(COLORS[ids])
-hmap = heatmap!(axbasins, columns(parameters)..., best_labels; colormap)
+colormap = cgrad(COLORS[ids], length(ids); categorical = true)
+hmap = heatmap!(axbasins, columns(parameters)..., best_labels; colormap, colorrange = (0.5, 3.5))
+cb = Colorbar(figbasins[1,2], hmap; ticks = (Int[1,2,3], string.([1,2,3])))
 
 # calculate and plot intermingledness
 imatrix = intermingledness(allfeatures, best_labels; summarizer = mean)
@@ -50,7 +50,6 @@ plot_intermingledness!(figinter, imatrix;
     names = diagnostics
 )
 figuretitle!(figinter, "b: intermingledness of diagnostics"; halign = :left)
-
 
 # plot basins of diagnostics
 pairs = [(6, 12), (1, 4), (5, 11)]
