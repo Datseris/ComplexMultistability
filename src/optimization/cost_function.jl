@@ -57,10 +57,9 @@ function (fcq::FeaturesClusteringQuality)(features)
         L = 0
     end
     feature_dim = input_data_size(features)[1]
-    quality = v_optimal*(1 + fcq.attractor_weight*A - fcq.feature_weight*feature_dim - fcq.punish_weight*L)
+    quality = v_optimal*(fcq.attractor_weight*A - fcq.feature_weight*feature_dim - fcq.punish_weight*L)
     return FeaturesClusteringResults(
         quality, labels, v_optimal, L,
         fcq.attractor_weight, fcq.feature_weight, fcq.punish_weight
     )
-    return quality
 end
