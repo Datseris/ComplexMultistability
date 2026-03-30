@@ -12,7 +12,7 @@ It is returned as a matrix, with as columns as the dimension of `u0s` and
 as many rows as attractors, since intermingledness is calculated basin.
 
 Intermingledness is normalized by the mean distance in each cluster,
-so that values higher than 1 mean actually intermingled!
+the closer to 1, the more intermingled!
 """
 function intermingledness(u0s::StateSpaceSet, labels;
         summarizer = maximum

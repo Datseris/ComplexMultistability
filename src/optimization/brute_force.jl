@@ -46,7 +46,7 @@ function optimize_feature_selection(
     best_choice = Int[]
     max_quality = -Inf
     best_result = FeaturesClusteringResults()
-    ProgressMeter.@showprogress desc="BruteForce Clustering..." for choice in alloptions
+    ProgressMeter.@showprogress desc="Optimizing clustering..." for choice in alloptions
         features = allfeatures[:, choice]
         result = features_clustering_quality(features)
         quality = result.quality

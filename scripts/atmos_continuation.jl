@@ -1,6 +1,7 @@
 using DrWatson
 @quickactivate "ComplexMultistability"
 using ClimateBase, StateSpaceSets
+using Attractors
 include("atmos_shared.jl")
 
 # %% computation across params
@@ -14,7 +15,6 @@ features_across_param = []
 best_features_across_param = []
 
 ca = ADBSCAN(; min_neighbors = 10)
-opt = BruteForce(verbose = false, minF = 2, reclustering = 0, )
 fcq = FeaturesClusteringQuality(; attractor_weight = 1.0, feature_weight = 0.5, ca)
 
 for epsilon in epsilons
@@ -22,12 +22,12 @@ for epsilon in epsilons
     ncfile = datadir("oisin", filename)
     X = ncread(ncfile, "value")
     t = gnv(dims(X, Tim))
-    sampler = 10
+    sampler = 10 # sub-sample, the data are too dense
     X = X[Tim(1:sampler:length(t))]
     t = t[1:sampler:length(t)]
     diagnostics = gnv(dims(X, Diagnostic))
     ics = gnv(dims(X, InitCond)) .+ 1
-    allfeatures = extract_features(X)
+    allfeatures = cast_to_features(X, atmos_featurizer)
     best_choice, best_labels = optimize_feature_selection(fcq, allfeatures;
         verbose = false, minF = 2, reclustering = 0,
     )
@@ -85,10 +85,10 @@ end
 
 # continue intermingledness
 intermingledness_cont = intermingledness.(attractors_cont)
+chosen = 27 # which diagnostic to project to
 
 fig, axs = axesgrid(2, 1; sharex = true, size = (figwidth÷2, figheight), xlabels = "ε", ylabels = [diagnostics[chosen], "mean intermingl."])
 # plot attractors cont
-chosen = 27 # which diagnostic to project to
 a2r = A -> mean(A[:, chosen])
 plot_attractors_curves!(axs[1], attractors_cont, a2r, epsilons; series_kwargs = (markersize = 20, linewidth = 1, ), add_legend = false)
 
@@ -97,9 +97,9 @@ inter_info = map(1:length(attractors_cont)) do i
     Dict(k => mean(intermingledness_cont[i][k, :]) for k in keys(attractors_cont[i]))
 end
 plot_continuation_curves!(axs[2], inter_info, epsilons; add_legend = false, series_kwargs = (markersize = 20, linewidth = 1, ))
-# hideydecorations!.(axs; label = false)
 xlims!(axs[end], nothing, nothing)
 hideydecorations!(axs[1], label = false)
+
 fig
 
 # %%

@@ -13,7 +13,6 @@ u0s
 natt
 featcols = columns(allfeatures)
 u0cols = columns(u0s)
-# colormap = cgrad(COLORS[1:5], 5; categorical = true)
 
 # from which we can generate the rest.
 imatrix_features = intermingledness(allfeatures, best_labels)
@@ -88,7 +87,7 @@ plot_twice_intermingledness!(figinter, imatrix_features, imatrix_basins,;
 
 # add timeseries
 gl = GridLayout(glleft[3, 1])
-ax = Axis(gl[1,1]; xlabel = "time (units???)")
+ax = Axis(gl[1,1]; xlabel = "time (days)")
 u0_idxs = [findfirst(isequal(k), best_labels) for k in 1:natt]
 dim = best_choice[1]
 for (j, u0idx) in enumerate(u0_idxs)

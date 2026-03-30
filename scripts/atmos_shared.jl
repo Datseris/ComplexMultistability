@@ -42,7 +42,7 @@ end)
 
 # %% Cluster
 using Statistics
-function featurizer(A::StateSpaceSet, t)
+function atmos_featurizer(A::StateSpaceSet, t)
     cols = columns(A)
     L = length(A)
     Ls = round(Int, 0.75L)
@@ -53,7 +53,7 @@ function featurizer(A::StateSpaceSet, t)
     return SVector(stds)
 end
 
-allfeatures = cast_to_features(X, featurizer)
+allfeatures = cast_to_features(X, atmos_featurizer)
 allfeatures = rescale_to_01(allfeatures)
 
 ca = ADBSCAN(; rescale_features = false, min_neighbors = 10)
