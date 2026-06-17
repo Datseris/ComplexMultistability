@@ -13,7 +13,7 @@ top = GridLayout(fig[1,1])
 bottom = GridLayout(fig[2,1])
 
 # TODO: Need spatiotemporal plot by Johannes
-figuretitle!(top[1,1], "1. complex simulation\n(many initial conditions)")
+figuretitle!(top[1,1], "1. complex multi-state system\n(many different simulations)")
 Axis(top[1,1][1,1])
 
 # Second plot: diagnostics timeseries
@@ -35,7 +35,7 @@ end
 axislegend(axs[end], "initial condition"; backgroundcolor = (:white, 0.8), halign = :right, valign = 0.3, nbanks = 3)
 xlims!(axs[end], 0, 3000)
 
-figuretitle!(top[1,3], "3. project to \nfeature space")
+figuretitle!(top[1,3], "3. cast into feature space\n(collapse time dimension)")
 axf = Axis(top[1,3][1,1]; xlabel = "mean-last-1000-yr: salt_tot", ylabel = "std-total: temp_sub_SA")
 axf.spinewidth = 3
 
@@ -59,7 +59,7 @@ end
 axislegend(axf)
 hidedecorations!(axf; label = false)
 
-figuretitle!(top[1,4], "4. group features\ninto attractors")
+figuretitle!(top[1,4], "4. group features\ninto different groups")
 axff = Axis(top[1,4][1,1]; xlabel = "mean-last-1000-yr: salt_tot", ylabel = "std-total: temp_sub_SA")
 axff.spinewidth = 3
 
@@ -76,7 +76,7 @@ hidedecorations!(axff; label = false)
 
 figuretitle!(bottom[1,4], "5. optimize choise of features\n(which features distinguish the most)")
 
-figuretitle!(bottom[1,3], "6. attractors identified")
+figuretitle!(bottom[1,3], "6. unique groups identified")
 axa = Axis3(bottom[1,3][1,1])
 
 i, j, k = best_choice
@@ -101,7 +101,7 @@ axa.xspinewidth = 3
 axa.yspinewidth = 3
 axa.zspinewidth = 3
 
-figuretitle!(bottom[1,2], "7. approximate basins")
+figuretitle!(bottom[1,2], "7. approximate basins\n(if applicable)")
 axb = Axis(bottom[1,2][1,1])
 
 allu0s = zeros(length(ics), length(diagnostics))
@@ -137,7 +137,7 @@ axbgkw = (xgridvisible = false, ygridvisible = false, xminorgridvisible = true,
     yminorgridvisible = true, xminorgridcolor = :grey, yminorgridcolor = :grey,
     xminorticks = IntervalsBetween(2), yminorticks = IntervalsBetween(2),
 )
-axhm = Axis(bottom[1,1][1,1]; ylabel = "group ID", xlabel = "diagnostic", axbgkw...)
+axhm = Axis(bottom[1,1][1,1]; ylabel = "group ID", xlabel = "feature dimension", axbgkw...)
 hm = heatmap!(axhm, imatrix'; hmapkw...)
 axhm.xticks = 1:3
 translate!(hm, 0, 0, -100)

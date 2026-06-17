@@ -36,7 +36,7 @@ best_choice, best_labels = optimize_feature_selection(fcq, allfeatures;
 # Re-cluster only features with index 1
 label1idxs = findall(isequal(1), best_labels)
 allfeatures1 = allfeatures[label1idxs]
-cluster1_choice, cluster1_labels = optimize_feature_selection(opt, fcq, allfeatures1)
+cluster1_choice, cluster1_labels = optimize_feature_selection(fcq, allfeatures1)
 
 # This indeed leads to 2 attractors, so we normalize the existing labels
 cluster1_labels[findall(isequal(2), cluster1_labels)] .= 5

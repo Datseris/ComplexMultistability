@@ -34,7 +34,6 @@ max_choices_per_dim::Int = 2000 # keep things bounded for now
 d = input_data_size(allfeatures)[1]
 diag_idxs = 1:d
 alloptions = generate_choices(diag_idxs, minF, maxF, max_choices_per_dim)
-best_choice = Int[]
 stored_choices = []
 stored_optimals = []
 stored_qualities = []
@@ -70,6 +69,54 @@ Legend(fig[1,2],
 
 display(fig)
 
-# %%
+# %% save
 
 wsave(papersdir("figures", "dbscan_test"), fig)
+
+
+# %% Let's also make a figure here that highlights the silhuette mean/min optimization:
+# This is a copy of the source code of the `optimal_radius_dbscan_silhouette` function
+
+choice_idx = 3100
+choice = stored_choices[choice_idx]
+
+features = Attractors._rescale_to_01(allfeatures[:, choice])
+d = StateSpaceSet(features)
+mini, maxi = minmaxima(d)
+feat_ranges = maxi .- mini
+
+num_attempts_radius = 100
+min_neighbors = 10
+
+ϵ_grid = range(
+    minimum(feat_ranges)/num_attempts_radius, 2*minimum(feat_ranges);
+    length=num_attempts_radius
+)
+s_grid = zeros(size(ϵ_grid)) # silhouette statistic values (which we want to maximize)
+s_grid_min = zeros(size(ϵ_grid)) # silhouette statistic values (which we want to maximize)
+
+# vary ϵ to find the best one (which will maximize the mean silhouette)
+metric = Euclidean()
+dists = Attractors.Distances.pairwise(metric, features)
+for i in eachindex(ϵ_grid)
+    clusters = Attractors.Clustering.dbscan(dists, ϵ_grid[i]; min_neighbors, metric = nothing)
+    sils = silhouettes_new(clusters, dists)
+    s_grid[i] = mean(sils)
+    s_grid_min[i] = minimum(sils)
+end
+
+fig, ax = lines(ϵ_grid, s_grid)
+optimal_val, idx = findmax(s_grid)
+ϵ_optimal = ϵ_grid[idx]
+vlines!(ax, ϵ_optimal; color = Cycled(2), linestyle = :dot)
+resize!(fig, figwidth÷2, figheight)
+# lines!(ax, ϵ_grid, s_grid_min; color = Cycled(3))
+ylims!(ax, 0, 1)
+ax.xlabel = "radius ε"
+ax.ylabel = "silhuette mean"
+
+fig
+
+# %%
+wsave(papersdir("figures", "silhuette_demonstration"), fig)
+negate_remove_bg(papersdir("figures", "silhuette_demonstration.png"))
