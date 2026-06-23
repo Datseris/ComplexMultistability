@@ -1,6 +1,8 @@
-# TODO: It would be better for this to return a dictionary instead
-# of a matrix. It plays so much better with continuation. Oh well!
-# In Attractors.jl this is done properly.
+# Note: Attractors.jl implementation is better.
+# First, it accepts a generic distance function.
+# Second, it returns a dictionary instead of a matrix.
+# (as it is done for only one distance function, simplifying the API.
+# it can be looped at a higher level for more distance functions)
 
 """
     intermingledness(u0s::StateSpaceSet, labels)
@@ -15,7 +17,7 @@ Intermingledness is normalized by the mean distance in each cluster,
 the closer to 1, the more intermingled!
 """
 function intermingledness(u0s::StateSpaceSet, labels;
-        summarizer = maximum
+        summarizer = mean
     )
     ukeys = unique(labels)
     imetric_per_dim = map(1:dimension(u0s)) do dim_idx

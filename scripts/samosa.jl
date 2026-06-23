@@ -45,11 +45,11 @@ hmap = heatmap!(axbasins, columns(parameters)..., best_labels; colormap, colorra
 cb = Colorbar(figbasins[1,2], hmap; ticks = (Int[1,2,3], string.([1,2,3])))
 
 # calculate and plot intermingledness
-imatrix = intermingledness(allfeatures, best_labels; summarizer = mean)
+imatrix = intermingledness(allfeatures, best_labels)
 plot_intermingledness!(figinter, imatrix;
     names = diagnostics
 )
-figuretitle!(figinter, "b: intermingledness of diagnostics"; halign = :left)
+figuretitle!(figinter, "b: intermingledness of features (global mean of diagnostics)"; halign = :left)
 
 # plot basins of diagnostics
 pairs = [(6, 12), (1, 4), (5, 11)]
