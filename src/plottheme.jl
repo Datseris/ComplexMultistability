@@ -9,9 +9,3 @@ using MakieForProjects, CairoMakie # this has now set the theme already!
 Makie.update_theme!(;
     # size = (figwidth, figheight),
 )
-
-
-cmap = to_color.([:blue, :white, :red])
-intermingledness_heatmap_kw = (
-    hmapkw = (colorrange = (0.0,1.0), colormap = cgrad(cmap, 9, categorical = true))
-)

@@ -12,9 +12,9 @@ fig = Figure(size = (1.33figwidth, 2figheight))
 top = GridLayout(fig[1,1])
 bottom = GridLayout(fig[2,1])
 
-# TODO: Need spatiotemporal plot by Johannes
 figuretitle!(top[1,1], "1. complex multi-state system\n(many different simulations)")
-Axis(top[1,1][1,1])
+ax0 = Axis(top[1,1][1,1])
+hidedecorations!(ax0)
 
 # Second plot: diagnostics timeseries
 figuretitle!(top[1,2], "2. diagnostic variables timeseries\n(collapse space dimensions)")
@@ -128,7 +128,7 @@ axislegend(axb,
 
 figuretitle!(bottom[1,1], "8. intermingledness")
 
-imatrix = intermingledness(StateSpaceSet(allu0s), best_labels; summarizer = maximum)
+imatrix = intermingledness(StateSpaceSet(allu0s), best_labels)
 imatrix = imatrix[:, best_choice]
 
 cmap = to_color.([:white, :black])
@@ -142,9 +142,9 @@ hm = heatmap!(axhm, imatrix'; hmapkw...)
 axhm.xticks = 1:3
 translate!(hm, 0, 0, -100)
 cb = Colorbar(bottom[1,1][1,2]; width = 20, hmapkw...)
-cb.ticks = ([0.0, 1.0], ["low", "high"])
-cb.ticklabelrotation = -π/2
-cb.labelrotation = -π/2
+cb.ticks = ([0.0, 1.0], ["0", "1"])
+# cb.ticklabelrotation = -π/2
+# cb.labelrotation = -π/2
 cb.labelpadding = -20
 
 colsize!(bottom, 4, Relative(0.4))

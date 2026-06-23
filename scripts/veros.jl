@@ -57,7 +57,7 @@ for (k, (i, j)) in enumerate(choices)
         ax = axs[k]
         # cluster, get labels, etc.
         scatter!(ax, cols[i], cols[j];
-            color = labels, colormap,  markersize = 15,
+            color = labels, alpha = 0.75,  colormap,  markersize = 10,
             strokewidth = 0.25, strokecolor = "black",
             marker = getindex.(Ref(MARKERS), labels),
 

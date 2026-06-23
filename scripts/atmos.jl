@@ -67,7 +67,8 @@ for (k, (i, j)) in enumerate(choices)
         scatter!(ax, cols[i], cols[j];
             marker = getindex.(Ref(MARKERDict), labels),
             color = getindex.(Ref(COLORDict), labels),
-            markersize = 15,
+            markersize = 12,
+            alpha = 0.75,
             strokewidth = 0.25, strokecolor = "black",
         )
         ax.xlabel = feature_names[i]
